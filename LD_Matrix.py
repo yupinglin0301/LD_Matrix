@@ -19,8 +19,6 @@ def main_with_args(args):
 --bed: Binary data file (Genotypes; Default: test.bed)
 --bim: Binary data file (SNP info; Default: test.bim)
 --fam: Binary data file (Individual info; Default: test.fam)
---block: Block file (By default, all SNPs are in one block)
---snplist: SNP list file (By default, all SNP pairs are calculated)
 --output: output filename (Default: LD.h5)
 --method: Correlation estimation method, including: Pearson, LW (Default:Pearson)
 --thread: Thread number for calculation (Default: Total CPU number)
@@ -33,15 +31,31 @@ def main_with_args(args):
          '--bed':'test.bed',
          '--bim':'test.bim',
          '--fam':'test.fam',
-         '--bgen':None,
-        '--block':None,
-        '--snplist':None, 
         '--output':'LD.h5',
         '--log': 'plinkLD.log',
         '--thread':multiprocessing.cpu_count(), 
         '--method':'Pearson', 
         '--compress': 9}
     
+    sys.stdout = logger.logger(arg['--log'])
+    
+    cpuNum = multiprocessing.cpu_count()
+    try:
+        threadNum = round(float(arg['--thread']))
+    except ValueError:
+        print('Warning: --thread must be a numeric value')
+        threadNum = cpuNum
+    
+    if threadNum<=0: 
+        threadNum=cpuNum
+    print(cpuNum, 'CPUs detected, using', threadNum, 'thread...' )
+  
+    print(arg['--method'],'method for LD calculation')
+    
+    if arg['--bfile']!=None:
+        arg['--bed']=arg['--bfile']+'.bed'
+        arg['--bim']=arg['--bfile']+'.bim'
+        arg['--fam']=arg['--bfile']+'.fam'
 
     
     
