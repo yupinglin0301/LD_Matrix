@@ -56,6 +56,16 @@ def main_with_args(args):
         arg['--bed']=arg['--bfile']+'.bed'
         arg['--bim']=arg['--bfile']+'.bim'
         arg['--fam']=arg['--bfile']+'.fam'
+    
+    print('Start loading SNP information...')
+    try:
+        #with open(arg['--bim'],'r') as f:
+        #snpInfo = [i.strip() for i in f.readlines() if len(i.strip())!=0]
+        snpInfo = pd.read_table(arg['--bim'], sep='\s+', names=['CHR','SNP','GD','BP','A1','A2'], dtype={'SNP':str,'CHR':str,'A1':str,'A2':str})
+    except:
+            print("Could not read SNP Info file:", arg['--bim'])
+            exit()
+    
 
     
     
