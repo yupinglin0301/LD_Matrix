@@ -3,9 +3,10 @@ import numpy as np
 import logger
 import multiprocessing
 from sklearn.covariance import ledoit_wolf
-import plink2SnpReader
-import bgen_reader
 import pandas as pd
+
+
+# python plinkLD.py --bfile 1000G.EUR.QC --block fourier_ls-all.bed --out LD.h5
 
 
 
@@ -28,9 +29,9 @@ def main_with_args(args):
 ======================================'''
 
     arg={'--bfile':None,
-         '--bed':'test.bed',
-         '--bim':'test.bim',
-         '--fam':'test.fam',
+         '--bed':'data/geno.bed',
+         '--bim':'data/geno.bim',
+         '--fam':'data/geno.fam',
         '--output':'LD.h5',
         '--log': 'plinkLD.log',
         '--thread':multiprocessing.cpu_count(), 
@@ -52,6 +53,8 @@ def main_with_args(args):
   
     print(arg['--method'],'method for LD calculation')
     
+    
+    
     if arg['--bfile']!=None:
         arg['--bed']=arg['--bfile']+'.bed'
         arg['--bim']=arg['--bfile']+'.bim'
@@ -63,9 +66,22 @@ def main_with_args(args):
         #snpInfo = [i.strip() for i in f.readlines() if len(i.strip())!=0]
         snpInfo = pd.read_table(arg['--bim'], sep='\s+', names=['CHR','SNP','GD','BP','A1','A2'], dtype={'SNP':str,'CHR':str,'A1':str,'A2':str})
     except:
-            print("Could not read SNP Info file:", arg['--bim'])
-            exit()
+        print("Could not read SNP Info file:", arg['--bim'])
+        exit()
     
 
+    snpNum = len(snpInfo)
+    print(snpNum,'SNPs.')
+
+    #Change A1 and A2 to lower case for easily matching
+    snpInfo['SNP'] = snpInfo['SNP'].str.lower()
+    snpInfo['A1'] = snpInfo['A1'].str.lower()
+    snpInfo['A2'] = snpInfo['A2'].str.lower()
     
+    
+    
+    
+  
+if __name__ == '__main__':
+    main_with_args(sys.argv) 
     

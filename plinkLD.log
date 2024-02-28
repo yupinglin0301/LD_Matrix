@@ -1,0 +1,30 @@
+8 CPUs detected, using 8 thread...
+Pearson method for LD calculation
+Start loading SNP information...
+     CHR      SNP  GD    BP A1 A2
+0      1      rs1   0     1  C  A
+1      1      rs2   0     2  C  A
+2      1      rs3   0     3  C  A
+3      1      rs4   0     4  C  A
+4      1      rs5   0     5  C  A
+...   ..      ...  ..   ... .. ..
+9995  10   rs9996   0   996  C  A
+9996  10   rs9997   0   997  C  A
+9997  10   rs9998   0   998  C  A
+9998  10   rs9999   0   999  C  A
+9999  10  rs10000   0  1000  C  A
+
+[10000 rows x 6 columns]
+10000 SNPs.
+0        1
+1        1
+2        1
+3        1
+4        1
+        ..
+9995    10
+9996    10
+9997    10
+9998    10
+9999    10
+Name: CHR, Length: 10000, dtype: object
