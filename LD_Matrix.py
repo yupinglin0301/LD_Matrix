@@ -78,7 +78,22 @@ def main_with_args(args):
     snpInfo['A1'] = snpInfo['A1'].str.lower()
     snpInfo['A2'] = snpInfo['A2'].str.lower()
     
+    ch = snpInfo['CHR'].tolist()#[0]*snpNum  #Chromosome
+    snpID = snpInfo['SNP'].tolist()#['']*snpNum #SNP ID
+    bp = snpInfo['BP'].tolist()#[0]*snpNum  #Base position
+    chSet = list(set(ch))
     
+    
+    print("Start loading individual information... ")
+    try:
+        with open(arg['--fam'],'r') as f:
+            indInfo = [i.strip() for i in f.readlines()]  
+    except IOError:
+        print("Could not read Individual Info file", arg['--fam'])
+        exit()
+    
+    indNum = len(indInfo)
+    print(indNum,'individuals.')
     
     
   
