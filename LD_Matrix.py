@@ -72,6 +72,9 @@ def main_with_args(args):
 
     snpNum = len(snpInfo)
     print(snpNum,'SNPs.')
+    
+    
+    
 
     #Change A1 and A2 to lower case for easily matching
     snpInfo['SNP'] = snpInfo['SNP'].str.lower()
@@ -95,6 +98,32 @@ def main_with_args(args):
     indNum = len(indInfo)
     print(indNum,'individuals.')
     
+    
+    print("Start building block file... ")
+    blockNum = len(chSet)
+    blockCH = ['']*blockNum
+    blockStart = [0]*blockNum
+    blockStop = [0]*blockNum
+    print(blockNum, 'Blocks (Each chromosome is an unique block).')
+    
+    for i in range(0,blockNum):
+        blockCH[i] = chSet[i]
+        tmpBP = [bp[j] for j in range(0, snpNum) if ch[j]==blockCH[i]]
+        blockStart[i] = min(tmpBP)
+        blockStop[i] = max(tmpBP)
+
+    
+    filename = arg['--output']
+    dirname = os.path.dirname(filename)
+    
+    print("Reading BED file...")
+        
+        
+        
+    
+
+    
+ 
     
   
 if __name__ == '__main__':
