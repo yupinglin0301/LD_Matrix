@@ -4,6 +4,7 @@ import logger
 import multiprocessing
 from sklearn.covariance import ledoit_wolf
 import pandas as pd
+from pandas_plink import read_plink
 
 
 # python plinkLD.py --bfile 1000G.EUR.QC --block fourier_ls-all.bed --out LD.h5
@@ -117,8 +118,49 @@ def main_with_args(args):
     dirname = os.path.dirname(filename)
     
     print("Reading BED file...")
+  
+    bim, fam, bed = read_plink("/Users/yu-pinglin/Desktop/LD_Matrix/data/geno*.bed")
         
+    
+    pool = multiprocessing.Pool(processes = threadNum) 
+    effectiveI = []
+    tmpResults = []
+    snpInfoList = []
+    for i in range(blockNum):
+        #SNP index in the block
+        if i==0 or not blockCH[i] in blockCH[0:i]:
+            idx = [j for j in range(0, snpNum) if ch[j]==blockCH[i] \
+                        and blockStart[i]<= bp[j] and bp[j]<=blockStop[i]]
+          
+        else:
+            idx = [j for j in range(0, snpNum) if ch[j]==blockCH[i] \
+                        and blockStart[i]< bp[j] and bp[j]<=blockStop[i]]
+          
+    
+        if len(idx)==0: continue
+        if len(idx)==1 : 
+            print('Block '+ str(i)+ ' : Only '+str(len(idx))+ ' SNP in the block [Ignored]') 
+            continue
+        print('Block '+ str(i)+ ' : '+str(len(idx))+ ' SNPs [Calculating LD ...]')
+        totalSNPnum += len(idx)
         
+        blockGenotype = np.transpose(bed.compute()[idx, :])
+        blockSNPinfo = snpInfo.iloc[idx]
+        
+        effectiveI.append(i)
+        snpInfoList.append(blockSNPinfo)
+        
+
+
+   
+    
+
+    
+    
+    
+    
+   
+    
         
     
 
