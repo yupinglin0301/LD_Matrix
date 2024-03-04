@@ -11,6 +11,27 @@ from pandas_plink import read_plink
 
 
 
+def calBlockCorr(blockGenotype):
+    # Standardize
+    indNum, blockSNPnum = blockGenotype.shape
+    af = np.nanmean(blockGenotype, axis=0)/2.
+    expectation = np.outer(np.ones(indNum), 2.*af)
+    scale = np.nanstd(blockGenotype, axis=0)#np.sqrt(2*af*(1-af))
+    scaleMat = np.outer(np.ones(indNum), scale)
+    blockGenotype_norm = (blockGenotype-expectation)/scaleMat
+    mask = (~np.isnan(blockGenotype_norm)).astype(int)
+    blockGenotype_norm[mask==0] = 0
+        
+  
+    blockLD = np.around(np.dot(blockGenotype_norm.T, blockGenotype_norm)/indNum, decimals=3)
+   
+    return blockLD, af
+
+
+
+
+
+
 def main_with_args(args):
     startTime=time.time()
     
@@ -52,10 +73,16 @@ def main_with_args(args):
         threadNum=cpuNum
     print(cpuNum, 'CPUs detected, using', threadNum, 'thread...' )
   
-    print(arg['--method'],'method for LD calculation')
+
+    try:
+        complevel = round(float(arg['--compress']))
+    except ValueError:
+        print('Warning: --compress must be a numeric value')
+        complevel = 0
     
+    filename = arg['--output']
     
-    
+   
     if arg['--bfile']!=None:
         arg['--bed']=arg['--bfile']+'.bed'
         arg['--bim']=arg['--bfile']+'.bim'
@@ -118,15 +145,16 @@ def main_with_args(args):
     dirname = os.path.dirname(filename)
     
     print("Reading BED file...")
-  
     bim, fam, bed = read_plink("/Users/yu-pinglin/Desktop/LD_Matrix/data/geno*.bed")
         
     
+    print("LD calculation... ")
     pool = multiprocessing.Pool(processes = threadNum) 
     effectiveI = []
     tmpResults = []
     snpInfoList = []
-    for i in range(blockNum):
+    totalSNPnum =0
+    for i in [0]:
         #SNP index in the block
         if i==0 or not blockCH[i] in blockCH[0:i]:
             idx = [j for j in range(0, snpNum) if ch[j]==blockCH[i] \
@@ -149,7 +177,21 @@ def main_with_args(args):
         
         effectiveI.append(i)
         snpInfoList.append(blockSNPinfo)
-        
+        tmpResults.append(pool.apply_async(calBlockCorr, args=(blockGenotype,)))    
+    
+    store = pd.HDFStore(filename, 'w', complevel=complevel) 
+    i = effectiveI[0]
+    blockSNPinfo = snpInfoList[0]
+    blockLD, af = tmpResults[0].get()
+    #print('Block '+ str(i)+ ' : '+str(blockLD.shape[0])+ ' SNPs [Finished]')
+    print('Block '+ str(i)+ ' : '+str(blockLD.shape[0])+ ' SNPs [Finished]')
+    blockSNPinfo.insert(6,'F',af)
+    blockLD = pd.DataFrame(data=blockLD)
+    # Output Large file
+    store.put('SNPINFO'+str(i),value=blockSNPinfo, complevel=complevel, format='fixed')
+    store.put('LD'+str(i), value=blockLD, complevel=complevel, format='fixed')
+   
+
 
 
    
