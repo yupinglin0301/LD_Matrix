@@ -1,14 +1,9 @@
-import sys,time,re,os
+import sys,time,os
 import numpy as np
 import logger
 import multiprocessing
-from sklearn.covariance import ledoit_wolf
 import pandas as pd
 from pandas_plink import read_plink
-
-
-# python plinkLD.py --bfile 1000G.EUR.QC --block fourier_ls-all.bed --out LD.h5
-
 
 
 def calBlockCorr(blockGenotype):
@@ -66,7 +61,7 @@ def main_with_args(args):
         threadNum = cpuNum
     
     if threadNum<=0: 
-        threadNum=cpuNum
+        threadNum = cpuNum
     print(cpuNum, 'CPUs detected, using', threadNum, 'thread...' )
   
 
@@ -76,18 +71,14 @@ def main_with_args(args):
         print('Warning: --compress must be a numeric value')
         complevel = 0
     
-    filename = arg['--output']
-    
    
+    print('Start loading SNP information...')
     if arg['--bfile']!=None:
         arg['--bed']=arg['--bfile']+'.bed'
         arg['--bim']=arg['--bfile']+'.bim'
         arg['--fam']=arg['--bfile']+'.fam'
     
-    print('Start loading SNP information...')
     try:
-        #with open(arg['--bim'],'r') as f:
-        #snpInfo = [i.strip() for i in f.readlines() if len(i.strip())!=0]
         snpInfo = pd.read_table(arg['--bim'], sep='\s+', names=['CHR','SNP','GD','BP','A1','A2'], dtype={'SNP':str,'CHR':str,'A1':str,'A2':str})
     except:
         print("Could not read SNP Info file:", arg['--bim'])
@@ -96,17 +87,13 @@ def main_with_args(args):
 
     snpNum = len(snpInfo)
     print(snpNum,'SNPs.')
-    
-    
-    
-
     #Change A1 and A2 to lower case for easily matching
     snpInfo['SNP'] = snpInfo['SNP'].str.lower()
     snpInfo['A1'] = snpInfo['A1'].str.lower()
     snpInfo['A2'] = snpInfo['A2'].str.lower()
     
     ch = snpInfo['CHR'].tolist()#[0]*snpNum  #Chromosome
-    snpID = snpInfo['SNP'].tolist()#['']*snpNum #SNP ID
+   
     bp = snpInfo['BP'].tolist()#[0]*snpNum  #Base position
     chSet = list(set(ch))
     
@@ -137,8 +124,6 @@ def main_with_args(args):
         blockStop[i] = max(tmpBP)
 
     
-    filename = arg['--output']
-    dirname = os.path.dirname(filename)
     
     print("Reading BED file...")
     bim, fam, bed = read_plink("/Users/yu-pinglin/Desktop/LD_Matrix/data/geno*.bed")
@@ -174,9 +159,17 @@ def main_with_args(args):
         effectiveI.append(i)
         snpInfoList.append(blockSNPinfo)
         tmpResults.append(pool.apply_async(calBlockCorr, args=(blockGenotype,)))    
-        
     
-    store = pd.HDFStore(filename, 'w', complevel=complevel) 
+    # Output blockSNPinfo and blockLD into HDFStore  
+    filename = arg['--output']
+    dirname = os.path.dirname(filename)
+    if not (dirname=='' or os.path.exists(dirname)): os.makedirs(dirname)
+    try:
+        store = pd.HDFStore(filename, 'w', complevel=complevel)
+    except:
+        print('Unable to create file', filename)
+        exit()
+        
     for k in range(len(effectiveI)):
         i = effectiveI[k]
         blockSNPinfo = snpInfoList[k]
@@ -195,24 +188,6 @@ def main_with_args(args):
     print("==========================")
     print('Finish Calculation, Total_time =', float(totalTime)/60, 'min.') 
 
-
-
-   
-    
-
-    
-    
-    
-    
-   
-    
-        
-    
-
-    
- 
-    
-  
 if __name__ == '__main__':
     main_with_args(sys.argv) 
     
