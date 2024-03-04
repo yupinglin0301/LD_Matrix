@@ -23,6 +23,12 @@ This repository stores data and analysis modules to create linkage disequilibriu
 |-- requirements.txt # list of necessary python packages
 ~~~~~~~
 
+### Reference Data
+The reference panel based on the 1000 Genomes Project is available here:
++ https://www.cog-genomics.org/plink/1.9/resources
+
+
+
 
 ## 3. Instructions for getting started
 ### 3.1. Cloning
