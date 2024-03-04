@@ -8,4 +8,24 @@ Start building block file...
 Reading BED file...
 LD calculation... 
 Block 0 : 1000 SNPs [Calculating LD ...]
+Block 1 : 1000 SNPs [Calculating LD ...]
+Block 2 : 1000 SNPs [Calculating LD ...]
+Block 3 : 1000 SNPs [Calculating LD ...]
+Block 4 : 1000 SNPs [Calculating LD ...]
+Block 5 : 1000 SNPs [Calculating LD ...]
+Block 6 : 1000 SNPs [Calculating LD ...]
+Block 7 : 1000 SNPs [Calculating LD ...]
+Block 8 : 1000 SNPs [Calculating LD ...]
+Block 9 : 1000 SNPs [Calculating LD ...]
 Block 0 : 1000 SNPs [Finished]
+Block 1 : 1000 SNPs [Finished]
+Block 2 : 1000 SNPs [Finished]
+Block 3 : 1000 SNPs [Finished]
+Block 4 : 1000 SNPs [Finished]
+Block 5 : 1000 SNPs [Finished]
+Block 6 : 1000 SNPs [Finished]
+Block 7 : 1000 SNPs [Finished]
+Block 8 : 1000 SNPs [Finished]
+Block 9 : 1000 SNPs [Finished]
+==========================
+Finish Calculation, Total_time = 0.4670441548029582 min.
