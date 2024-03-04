@@ -125,7 +125,7 @@ def main_with_args(args):
     
     
     print("Reading BED file...")
-    bim, fam, bed = read_plink("/Users/yu-pinglin/Desktop/LD_Matrix/data/geno*.bed")
+    bim, fam, bed = read_plink("data/geno*.bed")
         
     
     print("LD calculation... ")
