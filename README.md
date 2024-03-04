@@ -15,8 +15,6 @@ This repository stores data and analysis modules to create linkage disequilibriu
     |-- geno.fam # Binary data file for individual information
 |-- results
     |-- DisasterResponse.db # database to save clean data
-    |-- disaster_categories.csv # categories data to process
-    |-- disaster_message.csv # message data to process
 |-- scripts
     |-- classifier.pkl # saved model
     |-- train_classifier.py # machine learning script that creates and trains a classifier, and stores the classifier into a pickle file
