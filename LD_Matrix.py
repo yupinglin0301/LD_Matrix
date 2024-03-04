@@ -39,32 +39,25 @@ def main_with_args(args):
 --help: Help
 ======================================'''
 
-    arg={'--bfile':None,
-         '--bed':'data/geno.bed',
-         '--bim':'data/geno.bim',
-         '--fam':'data/geno.fam',
+    arg={'--bed':'data/1000G_CEU_MAF0.01.bed',
+         '--bim':'data/1000G_CEU_MAF0.01.bim',
+         '--fam':'data/1000G_CEU_MAF0.01.fam',
          '--output':'results/LD.h5',
          '--log': 'plinkLD.log',
-         '--thread':multiprocessing.cpu_count(), 
-         '--method':'Pearson', 
+         '--thread':2, 
          '--compress': 9}
     
     sys.stdout = logger.logger(arg['--log'])
     print('=============plinkLD====================')
     print(helpText)
     
-    cpuNum = multiprocessing.cpu_count()
+    
     try:
         threadNum = round(float(arg['--thread']))
+        print('CPUs detected, using', threadNum, 'thread...' )
     except ValueError:
         print('Warning: --thread must be a numeric value')
-        threadNum = cpuNum
     
-    if threadNum<=0: 
-        threadNum = cpuNum
-    print(cpuNum, 'CPUs detected, using', threadNum, 'thread...' )
-  
-
     try:
         complevel = round(float(arg['--compress']))
     except ValueError:
@@ -73,11 +66,6 @@ def main_with_args(args):
     
    
     print('Start loading SNP information...')
-    if arg['--bfile']!=None:
-        arg['--bed']=arg['--bfile']+'.bed'
-        arg['--bim']=arg['--bfile']+'.bim'
-        arg['--fam']=arg['--bfile']+'.fam'
-    
     try:
         snpInfo = pd.read_table(arg['--bim'], sep='\s+', names=['CHR','SNP','GD','BP','A1','A2'], dtype={'SNP':str,'CHR':str,'A1':str,'A2':str})
     except:
@@ -123,9 +111,8 @@ def main_with_args(args):
         blockStop[i] = max(tmpBP)
 
     
-    
     print("Reading BED file...")
-    bim, fam, bed = read_plink("data/geno*.bed")
+    bim, fam, bed = read_plink(arg['--bed'])
         
     print("LD calculation... ")
     pool = multiprocessing.Pool(processes = threadNum) 
@@ -133,6 +120,7 @@ def main_with_args(args):
     tmpResults = []
     snpInfoList = []
     totalSNPnum =0
+    
     for i in range(blockNum):
         #SNP index in the block
         if i==0 or not blockCH[i] in blockCH[0:i]:
@@ -157,6 +145,7 @@ def main_with_args(args):
         effectiveI.append(i)
         snpInfoList.append(blockSNPinfo)
         tmpResults.append(pool.apply_async(calBlockCorr, args=(blockGenotype,)))    
+        
     
     # Output blockSNPinfo and blockLD into HDFStore  
     filename = arg['--output']
@@ -185,6 +174,7 @@ def main_with_args(args):
     totalTime = time.time() - startTime
     print("==========================")
     print('Finish Calculation, Total_time =', float(totalTime)/60, 'min.') 
+    
 
 if __name__ == '__main__':
     main_with_args(sys.argv) 
