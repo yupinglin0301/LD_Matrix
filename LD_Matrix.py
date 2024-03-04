@@ -25,8 +25,6 @@ def calBlockCorr(blockGenotype):
 
 def main_with_args(args):
     startTime=time.time()
-    
-    print('=============plinkLD====================')
     helpText = '''
 =================HELP=================
 --bfile: Binary data file (Default: test)
@@ -52,6 +50,8 @@ def main_with_args(args):
          '--compress': 9}
     
     sys.stdout = logger.logger(arg['--log'])
+    print('=============plinkLD====================')
+    print(helpText)
     
     cpuNum = multiprocessing.cpu_count()
     try:
@@ -93,7 +93,6 @@ def main_with_args(args):
     snpInfo['A2'] = snpInfo['A2'].str.lower()
     
     ch = snpInfo['CHR'].tolist()#[0]*snpNum  #Chromosome
-   
     bp = snpInfo['BP'].tolist()#[0]*snpNum  #Base position
     chSet = list(set(ch))
     

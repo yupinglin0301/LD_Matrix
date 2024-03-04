@@ -1,3 +1,16 @@
+
+=================HELP=================
+--bfile: Binary data file (Default: test)
+--bed: Binary data file (Genotypes; Default: test.bed)
+--bim: Binary data file (SNP info; Default: test.bim)
+--fam: Binary data file (Individual info; Default: test.fam)
+--output: output filename (Default: LD.h5)
+--method: Correlation estimation method, including: Pearson, LW (Default:Pearson)
+--thread: Thread number for calculation (Default: Total CPU number)
+--compress: compression level for output (Default: 9) 
+--log: log file (Default: plinkLD.log)
+--help: Help
+======================================
 8 CPUs detected, using 8 thread...
 Start loading SNP information...
 10000 SNPs.
@@ -7,3 +20,14 @@ Start building block file...
 10 Blocks (Each chromosome is an unique block).
 Reading BED file...
 LD calculation... 
+Block 0 : 1000 SNPs [Calculating LD ...]
+Block 1 : 1000 SNPs [Calculating LD ...]
+Block 2 : 1000 SNPs [Calculating LD ...]
+Block 3 : 1000 SNPs [Calculating LD ...]
+Block 4 : 1000 SNPs [Calculating LD ...]
+Block 5 : 1000 SNPs [Calculating LD ...]
+Block 6 : 1000 SNPs [Calculating LD ...]
+Block 7 : 1000 SNPs [Calculating LD ...]
+Block 8 : 1000 SNPs [Calculating LD ...]
+Block 9 : 1000 SNPs [Calculating LD ...]
+Unable to create file results/LD.h5
