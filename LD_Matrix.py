@@ -127,7 +127,6 @@ def main_with_args(args):
     print("Reading BED file...")
     bim, fam, bed = read_plink("data/geno*.bed")
         
-    
     print("LD calculation... ")
     pool = multiprocessing.Pool(processes = threadNum) 
     effectiveI = []
